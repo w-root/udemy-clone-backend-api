@@ -41,7 +41,19 @@ INSTALLED_APPS = [
     'course',
     'ckeditor',
     'corsheaders',
+    'rest_framework.authtoken',
+    'dj_rest_auth',
+    'allauth',
+    'dj_rest_auth.registration',
+    'allauth.account',
+    'allauth.socialaccount',
 ]
+SITE_ID = 1
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+ACCOUNT_EMATL_VERIFICATION = 'none' 
+
+
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -134,6 +146,12 @@ STATIC_URL = '/static/'
 MEDIA_URL = '/media/'
 MEDIA_ROOT = 'uploads'
 
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.TokenAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
+    ]
+}
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
 
@@ -144,3 +162,4 @@ CORS_ALLOWED_ORIGINS = ['http://localhost:3000']
 SESSION_COOKIE_SECURE = False
 
 CSRF_TRUSTED_ORIGINS = ['http://localhost:3000/']
+

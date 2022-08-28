@@ -19,6 +19,8 @@ from django.urls import include, path
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/',include('course.api.urls')),
+    path('rest_auth/',include('dj_rest_auth.urls')),
+    path('rest_auth/registration',include('dj_rest_auth.registration.urls'))
 ]
 
 from django.conf import settings
