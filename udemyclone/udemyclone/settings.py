@@ -157,9 +157,10 @@ REST_FRAMEWORK = {
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-CORS_ALLOWED_ORIGINS = ['http://localhost:3000']
-
 SESSION_COOKIE_SECURE = False
 
+CORS_ALLOWED_ORIGINS = ['http://localhost:3000']
 CSRF_TRUSTED_ORIGINS = ['http://localhost:3000/']
+CORS_ALLOW_HEADERS = ['*']
+
 

@@ -10,6 +10,7 @@ router.register(r'categories', views.CategoryViewSet)
 
 urlpatterns = [
     path('',include(router.urls)),
+    path('logout',view=views.LogoutView.as_view()),
 ]
 
 
