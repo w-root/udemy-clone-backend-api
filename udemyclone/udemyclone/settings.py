@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'course',
     'ckeditor',
     'corsheaders',
+    'django_extensions',
     'rest_framework.authtoken',
     'dj_rest_auth',
     'allauth',

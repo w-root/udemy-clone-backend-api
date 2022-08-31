@@ -11,6 +11,10 @@ class CourseViewSet(ModelViewSet):
     queryset = Course.objects.all()
     serializer_class = CourseSerializer
     lookup_field = 'slug'
+    
+    def perform_create(self, serializer):
+        GetRequestUser(self.request)
+        serializer.save(instructor=self.request.user)
 
 class TabViewSet(ModelViewSet):
     queryset = Tab.objects.all()
