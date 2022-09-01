@@ -36,12 +36,12 @@ class Course(models.Model):
     image = models.ImageField(null=True,blank=True,upload_to='course_images/%Y/%m/')
     releaseDate = models.DateTimeField(auto_now_add=True)
     updatedDate = models.DateTimeField(auto_now=True)
-    price = models.SmallIntegerField(null=True,blank=True)
+    price = models.DecimalField(decimal_places=2,max_digits=10,null=True,blank=True)
     rating = models.PositiveIntegerField(null=True,blank=True,validators=[MinValueValidator(1),MaxValueValidator(5)],)
     slug = models.SlugField(blank=True,unique=True,db_index = True,max_length=250,null=True)
-    whatYouWillLearn = models.TextField(blank=True,null=True)
+    whatYouWillLearn = models.JSONField(null=True,blank=True,encoder=None)
     is_home = models.BooleanField(default=False,null=True,blank=True)
-    
+   
     def save(self,*args,**kwargs):
         self.slug = slugify(self.title)
         super().save(*args,**kwargs)       
