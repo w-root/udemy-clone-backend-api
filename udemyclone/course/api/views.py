@@ -1,6 +1,6 @@
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.views import APIView
-from rest_framework.generics import ListAPIView,RetrieveAPIView
+from rest_framework.generics import ListAPIView,get_object_or_404
 from rest_framework.response import Response
 from ..models import Category,Course, Tab
 from .serializers import CourseSerializer,CategorySerializer, TabSerializer
@@ -11,7 +11,7 @@ class CourseViewSet(ModelViewSet):
     queryset = Course.objects.all()
     serializer_class = CourseSerializer
     lookup_field ='slug'
-    
+       
     def perform_create(self, serializer):
         GetRequestUser(self.request)
         serializer.save(instructor=self.request.user)
@@ -31,7 +31,7 @@ class LogoutView(APIView):
         request.user.auth_token.delete()
         return Response("Çıkış Yapıldı")
 
-class GetUserCoursesView(ListAPIView):
+class GetInstructorCoursesView(ListAPIView):
     serializer_class = CourseSerializer
     
     def get_queryset(self):
@@ -39,14 +39,27 @@ class GetUserCoursesView(ListAPIView):
         queryset = Course.objects.filter(instructor = self.request.user)
         return queryset
     
+class GetStudentsCoursesView(ListAPIView):
+    serializer_class = CourseSerializer
+    
+    def get_queryset(self):
+        GetRequestUser(self.request)
+        queryset = Course.objects.filter(students = self.request.user)
+        return queryset
+      
 class GetCourseById(APIView):
     def get(self,request,pk):
-        print(pk)
-        instance = Course.objects.get(id=pk)
-        print(instance)
-        
+        instance = Course.objects.get(id=pk)      
         serializer = CourseSerializer(instance)
         return Response(serializer.data)        
+
+class BuyACourseView(APIView):
+    def post(self,request):
+        GetRequestUser(request)
+        print(request.data["id"])
+        course = get_object_or_404(Course,id=request.data["id"])
+        course.students.add(request.user)
+        return Response("Kurs satın alındı !")
     
 def GetRequestUser(request):
     token = Token.objects.get(key = request.headers["Sessionid"])
