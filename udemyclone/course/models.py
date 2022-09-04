@@ -24,6 +24,29 @@ class Category(models.Model):
         
     def __str__(self):
         return self.name
+    
+class Profile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    title = models.CharField(max_length=255,null=True,blank=True)
+    bio = RichTextField(null=True,blank=True)
+    photo = models.ImageField(null=True,blank=True,upload_to='profile_images/%Y/%m/')
+    language = models.CharField(max_length=30,null=True, blank=True)
+    website = models.CharField(max_length=75, null=True,blank=True)
+    twitter = models.CharField(max_length=75, null=True,blank=True)
+    facebook = models.CharField(max_length=75, null=True,blank=True)
+    linkedin = models.CharField(max_length=75, null=True,blank=True)
+    youtube = models.CharField(max_length=75, null=True,blank=True)
+    
+    def __str__(self):
+        return self.user.username
+    
+    def save(self,*args,**kwargs):
+        super().save(*args,**kwargs)       
+        if self.photo:
+            img = Image.open(self.photo.path) 
+            output_size = (1000,1000) 
+            img.thumbnail(output_size) 
+            img.save(self.photo.path) 
      
 class Course(models.Model):
     students = models.ManyToManyField(User,related_name='students')

@@ -1,11 +1,12 @@
-from rest_framework.viewsets import ModelViewSet
+from rest_framework.viewsets import ModelViewSet,GenericViewSet
 from rest_framework.views import APIView
-from rest_framework.generics import ListAPIView,get_object_or_404
+from rest_framework.generics import ListAPIView,RetrieveAPIView,get_object_or_404
 from rest_framework.response import Response
-from ..models import Category,Course, Tab
-from .serializers import CourseSerializer,CategorySerializer, TabSerializer
+from ..models import Category,Course, Profile, Tab
+from .serializers import CourseSerializer,CategorySerializer, ProfileSerializer, TabSerializer
 from rest_framework.authtoken.models import Token
 from django.contrib.auth.models import User
+from rest_framework import mixins
 
 class CourseViewSet(ModelViewSet):
     queryset = Course.objects.all()
@@ -24,7 +25,19 @@ class CategoryViewSet(ModelViewSet):
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
     lookup_field = 'slug'        
-   
+
+class UserProfilesViewSet(GenericViewSet,mixins.RetrieveModelMixin,
+                          mixins.UpdateModelMixin):
+    queryset = Profile.objects.all()
+    serializer_class = ProfileSerializer
+    
+class UserProfileView(APIView):
+    def get(self,request,username):
+        GetRequestUser(self.request)
+        instance = Profile.objects.get(user = request.user)
+        serializer = ProfileSerializer(instance)
+        return Response(serializer.data) 
+    
 class LogoutView(APIView):
     def delete(self,request):
         GetRequestUser(request)
@@ -56,7 +69,6 @@ class GetCourseById(APIView):
 class BuyACourseView(APIView):
     def post(self,request):
         GetRequestUser(request)
-        print(request.data["id"])
         course = get_object_or_404(Course,id=request.data["id"])
         course.students.add(request.user)
         return Response("Kurs satın alındı !")
