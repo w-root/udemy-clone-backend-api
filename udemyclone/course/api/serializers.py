@@ -11,7 +11,25 @@ class CategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = Category
         fields = '__all__'     
-           
+        
+        
+# Course Serializers
+class CourseSerializer(serializers.ModelSerializer):
+    students = serializers.StringRelatedField(many=True,read_only=True)
+    instructor = serializers.StringRelatedField(read_only=True)
+    image = serializers.ImageField(read_only=True)
+      
+    class Meta:
+        model = Course
+        fields = '__all__'
+        
+class CourseImageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Course
+        fields = ['image']
+        
+        
+# Profile Serializers
 class ProfileSerializer(serializers.ModelSerializer):
     user = serializers.StringRelatedField(read_only=True)
     photo = serializers.ImageField(read_only=True)
@@ -19,13 +37,8 @@ class ProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = Profile
         fields = '__all__'     
-                
-class CourseSerializer(serializers.ModelSerializer):
-    students = serializers.StringRelatedField(many=True,read_only=True)
-    instructor = serializers.StringRelatedField(read_only=True)
-      
+
+class ProfilePhotoSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Course
-        fields = '__all__'
-
-
+        model = Profile
+        fields = ['photo']

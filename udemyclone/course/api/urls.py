@@ -13,9 +13,11 @@ urlpatterns = [
     path('logout',views.LogoutView.as_view(),name = 'logout'),
     path('instructor/courses',views.GetInstructorCoursesView.as_view(),name = 'instructor-courses'),
     path('courses/getbyid/<int:pk>',views.GetCourseById.as_view(),name = 'get-course-by-id'),
+    path('<int:pk>/update-image/',views.CourseImageUpdateView.as_view(),name = 'update-course-image'),
     path('student/courses',views.GetStudentsCoursesView.as_view(),name = 'student-courses'),
     path('student/buy-a-course',views.BuyACourseView.as_view(),name = 'buy-a-course'),
     path('user-profiles/<str:username>',views.UserProfileView.as_view(),name = 'user-profiles'),
+    path('profile-photo',views.ProfilePhotoUpdateView.as_view(),name = 'profile-photo')
 ]
 
 
