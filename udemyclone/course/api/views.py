@@ -24,8 +24,8 @@ class GetInstructorCoursesView(ListAPIView):
     serializer_class = CourseSerializer
     
     def get_queryset(self):
-        GetRequestUser(self.request)
-        queryset = Course.objects.filter(instructor = self.request.user)
+        username = self.kwargs.get('username')
+        queryset = Course.objects.filter(instructor__username = username)
         return queryset
 
 class GetStudentsCoursesView(ListAPIView):
@@ -76,10 +76,17 @@ class UserProfilesViewSet(GenericViewSet,mixins.RetrieveModelMixin,
     queryset = Profile.objects.all()
     serializer_class = ProfileSerializer
     
+    def perform_update(self, serializer):
+        user = GetRequestUser(self.request)
+        if self.request.data["firstname"] and self.request.data["lastname"]:
+            user.first_name = self.request.data["firstname"]
+            user.last_name = self.request.data["lastname"]
+        user.save()
+        serializer.save()
+    
 class UserProfileView(APIView):
     def get(self,request,username):
-        GetRequestUser(self.request)
-        instance = Profile.objects.get(user = request.user)
+        instance = Profile.objects.get(user__username = username)
         serializer = ProfileSerializer(instance)
         return Response(serializer.data) 
     
@@ -101,3 +108,4 @@ class ProfilePhotoUpdateView(UpdateAPIView):
 def GetRequestUser(request):
     token = Token.objects.get(key = request.headers["Sessionid"])
     request.user = token.user
+    return token.user

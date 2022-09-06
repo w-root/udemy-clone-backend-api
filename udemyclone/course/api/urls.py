@@ -11,7 +11,7 @@ router.register(r'user-profiles', views.UserProfilesViewSet ,basename='user-prof
 urlpatterns = [
     path('',include(router.urls)),
     path('logout',views.LogoutView.as_view(),name = 'logout'),
-    path('instructor/courses',views.GetInstructorCoursesView.as_view(),name = 'instructor-courses'),
+    path('<str:username>/instructor/courses',views.GetInstructorCoursesView.as_view(),name = 'instructor-courses'),
     path('courses/getbyid/<int:pk>',views.GetCourseById.as_view(),name = 'get-course-by-id'),
     path('<int:pk>/update-image/',views.CourseImageUpdateView.as_view(),name = 'update-course-image'),
     path('student/courses',views.GetStudentsCoursesView.as_view(),name = 'student-courses'),

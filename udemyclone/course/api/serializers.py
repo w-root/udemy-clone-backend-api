@@ -33,10 +33,18 @@ class CourseImageSerializer(serializers.ModelSerializer):
 class ProfileSerializer(serializers.ModelSerializer):
     user = serializers.StringRelatedField(read_only=True)
     photo = serializers.ImageField(read_only=True)
+    firstname = serializers.SerializerMethodField()
+    lastname = serializers.SerializerMethodField()
     
     class Meta:
         model = Profile
         fields = '__all__'     
+
+    def get_firstname(self,obj):
+        return obj.user.first_name
+    
+    def get_lastname(self,obj):
+        return obj.user.last_name
 
 class ProfilePhotoSerializer(serializers.ModelSerializer):
     class Meta:
