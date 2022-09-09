@@ -45,8 +45,9 @@ class GetCourseById(APIView):
 class BuyACourseView(APIView):
     def post(self,request):
         GetRequestUser(request)
-        course = get_object_or_404(Course,id=request.data["id"])
-        course.students.add(request.user)
+        for val in request.data:
+            course = get_object_or_404(Course,id=val["id"])
+            course.students.add(request.user)
         return Response("Kurs satın alındı !")    
 
 class CourseImageUpdateView(UpdateAPIView): 

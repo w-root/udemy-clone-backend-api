@@ -1,3 +1,4 @@
+from email.policy import default
 from django.db import models
 from django.contrib.auth.models import User
 from django.core.validators import MinValueValidator,MaxValueValidator
@@ -29,7 +30,7 @@ class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     title = models.CharField(max_length=255,null=True,blank=True)
     bio = RichTextField(null=True,blank=True)
-    photo = models.ImageField(null=True,blank=True,upload_to='profile_images/%Y/%m/')
+    photo = models.ImageField(null=True,blank=True,default='profile_images/default_profile_image/user_default_profile_image.jpg',upload_to='profile_images/%Y/%m/')
     language = models.CharField(max_length=30,null=True, blank=True)
     website = models.CharField(max_length=75, null=True,blank=True)
     twitter = models.CharField(max_length=75, null=True,blank=True)
@@ -60,7 +61,7 @@ class Course(models.Model):
     releaseDate = models.DateTimeField(auto_now_add=True)
     updatedDate = models.DateTimeField(auto_now=True)
     price = models.DecimalField(decimal_places=2,max_digits=10,null=True,blank=True)
-    rating = models.PositiveIntegerField(null=True,blank=True,validators=[MinValueValidator(1),MaxValueValidator(5)],)
+    rating = models.PositiveIntegerField(null=True,blank=True,default=5,validators=[MinValueValidator(1),MaxValueValidator(5)],)
     slug = models.SlugField(blank=True,unique=True,db_index = True,max_length=250,null=True)
     whatYouWillLearn = models.JSONField(null=True,blank=True,encoder=None)
     is_home = models.BooleanField(default=False,null=True,blank=True)
@@ -69,10 +70,10 @@ class Course(models.Model):
         self.slug = slugify(self.title)
         super().save(*args,**kwargs)       
         if self.image:
-            img = Image.open(self.image.path) 
-            output_size = (1000,1000) 
+            img = Image.open(self.image.path)
+            output_size = (300,175) 
             img.thumbnail(output_size) 
-            img.save(self.image.path) 
-                
+            img.save(self.image.path)                 
+
     def __str__(self):
         return self.title
