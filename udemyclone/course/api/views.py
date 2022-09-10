@@ -1,47 +1,43 @@
-from urllib import request
+from xml.etree.ElementInclude import include
 from rest_framework.viewsets import ModelViewSet,GenericViewSet
 from rest_framework.views import APIView
 from rest_framework.generics import ListAPIView,UpdateAPIView,get_object_or_404
 from rest_framework.response import Response
 from ..models import Category,Course, Profile, Tab
-from .serializers import CourseImageSerializer, CourseSerializer,CategorySerializer, ProfilePhotoSerializer, ProfileSerializer, TabSerializer
+from . import serializers
 from rest_framework.authtoken.models import Token
-from django.contrib.auth.models import User
 from rest_framework import mixins
-
 
 #Course Model Views # 
 class CourseViewSet(ModelViewSet):
     queryset = Course.objects.all()
-    serializer_class = CourseSerializer
+    serializer_class = serializers.CourseSerializer
     lookup_field ='slug'
        
     def perform_create(self, serializer):
         GetRequestUser(self.request)
         serializer.save(instructor=self.request.user)
 
-class GetInstructorCoursesView(ListAPIView):
-    serializer_class = CourseSerializer
+class GetStudentsOrInstructorCoursesView(ListAPIView):
+    serializer_class = serializers.CourseSerializer
     
     def get_queryset(self):
-        username = self.kwargs.get('username')
-        queryset = Course.objects.filter(instructor__username = username)
-        return queryset
-
-class GetStudentsCoursesView(ListAPIView):
-    serializer_class = CourseSerializer
-    
-    def get_queryset(self):
-        GetRequestUser(self.request)
-        queryset = Course.objects.filter(students = self.request.user)
+        if self.request.path.find("instructor/courses") != -1:
+            username = self.kwargs.get('username')
+            queryset = Course.objects.filter(instructor__username = username)
+        elif self.request.path.find("student/courses") != -1:
+            GetRequestUser(self.request)
+            queryset = Course.objects.filter(students = self.request.user)       
         return queryset
       
-class GetCourseById(APIView):
-    def get(self,request,pk):
-        instance = Course.objects.get(id=pk)      
-        serializer = CourseSerializer(instance)
-        return Response(serializer.data)       
+class GetCourseById(ListAPIView):
+    serializer_class = serializers.CourseSerializer
     
+    def get_queryset(self):
+        pk = self.kwargs.get('pk')
+        queryset = Course.objects.get(id=pk)
+        return queryset
+        
 class BuyACourseView(APIView):
     def post(self,request):
         GetRequestUser(request)
@@ -51,7 +47,7 @@ class BuyACourseView(APIView):
         return Response("Kurs satın alındı !")    
 
 class CourseImageUpdateView(UpdateAPIView): 
-    serializer_class = CourseImageSerializer
+    serializer_class = serializers.CourseImageSerializer
     
     def get_object(self):
         pk = self.kwargs.get('pk')
@@ -61,21 +57,19 @@ class CourseImageUpdateView(UpdateAPIView):
 # Tab Model Views #
 class TabViewSet(ModelViewSet):
     queryset = Tab.objects.all()
-    serializer_class = TabSerializer
-
+    serializer_class = serializers.TabSerializer
 
 # Category Model Views #
 class CategoryViewSet(ModelViewSet):
     queryset = Category.objects.all()
-    serializer_class = CategorySerializer
+    serializer_class = serializers.CategorySerializer
     lookup_field = 'slug'
-
 
 # User Model Views #
 class UserProfilesViewSet(GenericViewSet,mixins.RetrieveModelMixin,
                           mixins.UpdateModelMixin):
     queryset = Profile.objects.all()
-    serializer_class = ProfileSerializer
+    serializer_class = serializers.ProfileSerializer
     
     def perform_update(self, serializer):
         user = GetRequestUser(self.request)
@@ -88,7 +82,7 @@ class UserProfilesViewSet(GenericViewSet,mixins.RetrieveModelMixin,
 class UserProfileView(APIView):
     def get(self,request,username):
         instance = Profile.objects.get(user__username = username)
-        serializer = ProfileSerializer(instance)
+        serializer = serializers.ProfileSerializer(instance)
         return Response(serializer.data) 
     
 class LogoutView(APIView):
@@ -98,7 +92,7 @@ class LogoutView(APIView):
         return Response("Çıkış Yapıldı")
 
 class ProfilePhotoUpdateView(UpdateAPIView): 
-    serializer_class = ProfilePhotoSerializer
+    serializer_class = serializers.ProfilePhotoSerializer
     
     def get_object(self):
         GetRequestUser(self.request)

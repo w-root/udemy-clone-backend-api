@@ -53,9 +53,6 @@ SITE_ID = 1
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 ACCOUNT_EMATL_VERIFICATION = 'none' 
 
-
-
-
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -98,15 +95,10 @@ WSGI_APPLICATION = 'udemyclone.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'udemy-clone',
-        'USER': 'root',
-        'PASSWORD': '159753',
-        'HOST': 'localhost',
-        'PORT': '3325',
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
-
 
 
 # Password validation
@@ -160,8 +152,8 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 SESSION_COOKIE_SECURE = False
 
-CORS_ALLOWED_ORIGINS = ['http://localhost:3000']
-CSRF_TRUSTED_ORIGINS = ['http://localhost:3000/']
+CORS_ORIGIN_ALLOW_ALL = True
+CSRF_TRUSTED_ALLOW_ALL = True
 CORS_ALLOW_HEADERS = ['*']
 
 

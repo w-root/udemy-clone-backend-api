@@ -1,6 +1,5 @@
 from rest_framework import serializers
 from ..models import Category,Course, Profile, Tab
-from django.contrib.auth.models import User
 
 class TabSerializer(serializers.ModelSerializer):
     class Meta:
