@@ -1,7 +1,7 @@
 from xml.etree.ElementInclude import include
 from rest_framework.viewsets import ModelViewSet,GenericViewSet
 from rest_framework.views import APIView
-from rest_framework.generics import ListAPIView,UpdateAPIView,get_object_or_404
+from rest_framework.generics import ListAPIView,UpdateAPIView,get_object_or_404,RetrieveAPIView
 from rest_framework.response import Response
 from ..models import Category,Course, Profile, Tab
 from . import serializers
@@ -30,14 +30,12 @@ class GetStudentsOrInstructorCoursesView(ListAPIView):
             queryset = Course.objects.filter(students = self.request.user)       
         return queryset
       
-class GetCourseById(ListAPIView):
-    serializer_class = serializers.CourseSerializer
-    
-    def get_queryset(self):
-        pk = self.kwargs.get('pk')
-        queryset = Course.objects.get(id=pk)
-        return queryset
-        
+class GetCourseById(APIView):
+    def get(self,request,pk):
+        instance = Course.objects.get(id=pk)      
+        serializer = serializers.CourseSerializer(instance)
+        return Response(serializer.data)   
+
 class BuyACourseView(APIView):
     def post(self,request):
         GetRequestUser(request)
