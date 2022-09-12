@@ -30,13 +30,11 @@ class GetStudentsOrInstructorCoursesView(ListAPIView):
             queryset = Course.objects.filter(students = self.request.user)       
         return queryset
       
-class GetCourseById(ListAPIView):
-    serializer_class = serializers.CourseSerializer
-    
-    def get_queryset(self):
-        pk = self.kwargs.get('pk')
-        queryset = Course.objects.get(id=pk)
-        return queryset
+class GetCourseById(APIView):
+    def get(self,request,pk):
+        instance = Course.objects.get(id=pk)      
+        serializer = serializers.CourseSerializer(instance)
+        return Response(serializer.data)   
         
 class BuyACourseView(APIView):
     def post(self,request):
