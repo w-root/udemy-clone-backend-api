@@ -1,4 +1,12 @@
 # Udemy Clone Backend Api
+
+## Technology
+
+* Python 
+* Django 
+* Django Rest Framework 
+* Sqlite
+
 Python Django Restframework ile Udemy Clone uygulaması - backend
 
 - [ ] Backend - Python django rest_framework
